@@ -60,6 +60,9 @@ import java_cup.runtime.Symbol;
 	case COMMENT:
 	    yybegin(YYINITIAL);
 	    return new Symbol(TokenConstants.ERROR, "EOF in comment");
+	case ML_COMMENT:
+	    yybegin(YYINITIAL);
+	    return new Symbol(TokenConstants.ERROR, "EOF in comment");
 	case STRING:
 	    yybegin(YYINITIAL);
 	    return new Symbol(TokenConstants.ERROR, "EOF in string constant");
@@ -74,10 +77,11 @@ import java_cup.runtime.Symbol;
 INTEGERS = [0-9]+
 TYPE_IDENTIFIERS = [A-Z][A-Za-z0-9_]*
 OBJECT_IDENTIFIERS = [a-z][A-Za-z0-9_]*
-CHAR = [^\"\0\n\\]+
+CHAR = [^\"\0\\]+
 WHITESPACE = [ \f\r\t\v]+
 
 %state COMMENT
+%state ML_COMMENT
 %state STRING
 %state STRING_ERROR
 
@@ -98,6 +102,15 @@ WHITESPACE = [ \f\r\t\v]+
         string_buf.setLength(0);
         yybegin(STRING);
 }
+<STRING>"\"" {
+        yybegin(YYINITIAL);
+        String string = string_buf.toString();
+        if (string.length() < MAX_STR_CONST) {
+            return new Symbol(TokenConstants.STR_CONST, AbstractTable.stringtable.addString(string));
+        } else {
+            return new Symbol(TokenConstants.ERROR, "String constant too long");
+        }
+}
 <STRING>"\b" {
         string_buf.append("\b");
 }
@@ -111,7 +124,7 @@ WHITESPACE = [ \f\r\t\v]+
         string_buf.append("\f");
 }
 <STRING>"\r" {
-        string_buf.append("\f");
+        string_buf.append("\r");
 }
 <STRING>{CHAR} {
         string_buf.append(yytext());
@@ -124,28 +137,15 @@ WHITESPACE = [ \f\r\t\v]+
         yybegin(STRING_ERROR);
         return new Symbol(TokenConstants.ERROR, "Unterminated string");
 }
-<STRING>"\"" {
-        yybegin(YYINITIAL);
-        String string = string_buf.toString();
-        if (string.length() < MAX_STR_CONST) {
-            return new Symbol(TokenConstants.STR_CONST, AbstractTable.stringtable.addString(string));
-        } else {
-            return new Symbol(TokenConstants.ERROR, "String constant too long");
-        }
-}
 
 
-<YYINITIAL>"--" {
-        yybegin(COMMENT);
-}
-<COMMENT>\n {
-        yybegin(YYINITIAL);
-}
 <YYINITIAL>"(*" {
         yybegin(COMMENT);
 }
 <COMMENT>\n|\r {
         curr_lineno++;
+}
+<COMMENT>. {
 }
 <COMMENT>"*)" {
         yybegin(YYINITIAL);

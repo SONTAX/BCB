@@ -76,15 +76,17 @@ class CoolLexer implements java_cup.runtime.Scanner {
 	}
 
 	private boolean yy_eof_done = false;
-	private final int STRING = 2;
-	private final int STRING_ERROR = 3;
+	private final int STRING = 3;
+	private final int ML_COMMENT = 2;
+	private final int STRING_ERROR = 4;
 	private final int YYINITIAL = 0;
 	private final int COMMENT = 1;
 	private final int yy_state_dtrans[] = {
 		0,
-		43,
+		41,
+		45,
 		46,
-		48
+		45
 	};
 	private void yybegin (int state) {
 		yy_lexical_state = state;
@@ -266,30 +268,27 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 38 */ YY_NO_ANCHOR,
 		/* 39 */ YY_NO_ANCHOR,
 		/* 40 */ YY_NO_ANCHOR,
-		/* 41 */ YY_NO_ANCHOR,
+		/* 41 */ YY_NOT_ACCEPT,
 		/* 42 */ YY_NO_ANCHOR,
-		/* 43 */ YY_NOT_ACCEPT,
+		/* 43 */ YY_NO_ANCHOR,
 		/* 44 */ YY_NO_ANCHOR,
-		/* 45 */ YY_NO_ANCHOR,
-		/* 46 */ YY_NOT_ACCEPT,
-		/* 47 */ YY_NO_ANCHOR,
-		/* 48 */ YY_NOT_ACCEPT
+		/* 45 */ YY_NOT_ACCEPT,
+		/* 46 */ YY_NOT_ACCEPT
 	};
 	private int yy_cmap[] = unpackFromString(1,65538,
-"13,12:8,20,14,12,20,18,12:18,20,12,5,12:5,16,19,17,26,33,15,22,25,1:10,31,3" +
-"2,27,28,34,12,23,2:26,12,6,12:2,3,12,4,7,4:3,10,4:7,9,4:3,11,4,8,4,21,4:4,2" +
-"9,12,30,24,12:65409,0:2")[0];
+"13,12:8,19,14,12,19,17,12:18,19,12,5,12:5,15,18,16,25,33,26,21,24,1:10,31,3" +
+"2,27,28,34,12,22,2:26,12,6,12:2,3,12,4,7,4:3,10,4:7,9,4:3,11,4,8,4,20,4:4,2" +
+"9,12,30,23,12:65409,0:2")[0];
 
-	private int yy_rmap[] = unpackFromString(1,49,
-"0,1,2,3,1,4,1:2,5,6,7,8,1:6,9,10,1:14,11,1:8,12,13,14,15,16,17")[0];
+	private int yy_rmap[] = unpackFromString(1,47,
+"0,1,2,3,1,4,1:2,5,6,7,1:7,8,9,1:13,10,1:7,11,12,13,14,15,16")[0];
 
-	private int yy_nxt[][] = unpackFromString(18,35,
-"1,2,3,4,5,6,4,5:5,4:2,7,8,9,10,11,12,11,45,13,14,15,16,17,18,19,20,21,22,23" +
-",24,4,-1:36,2,-1:34,3:4,-1:2,3:5,-1:9,3,-1:14,5:4,-1:2,5:5,-1:9,5,-1:28,25," +
-"-1:36,26,-1:36,27,-1:33,11,-1,11:2,-1:28,28,-1:12,29,-1:40,30,-1,34:4,-1:2," +
-"34:6,-1:2,34:20,1,4:13,31,4:2,44,32,4:16,-1:19,33,-1:16,5:4,-1:2,5:5,-1:6,1" +
-"1,-1,11,45,-1:13,1,34:4,35,47,34:6,36,37,34:20,-1:7,38,39,40,41,42,-1:23,1," +
-"4:13,7,4:3,-1,4:16");
+	private int yy_nxt[][] = unpackFromString(17,35,
+"1,2,3,4,5,6,4,5:5,4:2,7,8,9,10,11,10,43,12,13,14,15,16,17,18,19,20,21,22,23" +
+",24,4,-1:36,2,-1:34,3:4,-1:2,3:5,-1:8,3,-1:15,5:4,-1:2,5:5,-1:8,5,-1:30,25," +
+"-1:36,26,-1:33,10,-1,10:2,-1:40,27,-1,28,-1:40,29,-1,33:4,-1:2,33:6,-1,33:2" +
+"1,1,30:13,31,30,44,31,30:17,-1:7,36,37,38,39,40,-1:24,5:4,-1:2,5:5,-1:5,10," +
+"-1,10,43,-1:32,32,-1:16,1,4:13,7,4:2,-1,4:17,1,33:4,34,42,33:6,35,33:21");
 
 	public java_cup.runtime.Symbol next_token ()
 		throws java.io.IOException {
@@ -324,6 +323,9 @@ class CoolLexer implements java_cup.runtime.Scanner {
     case YYINITIAL:
 	    break;
 	case COMMENT:
+	    yybegin(YYINITIAL);
+	    return new Symbol(TokenConstants.ERROR, "EOF in comment");
+	case ML_COMMENT:
 	    yybegin(YYINITIAL);
 	    return new Symbol(TokenConstants.ERROR, "EOF in comment");
 	case STRING:
@@ -395,60 +397,60 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 8:
 						{
-        return new Symbol(TokenConstants.MINUS);
+        return new Symbol(TokenConstants.LPAREN);
 }
 					case -9:
 						break;
 					case 9:
 						{
-        return new Symbol(TokenConstants.LPAREN);
+        return new Symbol(TokenConstants.MULT);
 }
 					case -10:
 						break;
 					case 10:
 						{
-        return new Symbol(TokenConstants.MULT);
 }
 					case -11:
 						break;
 					case 11:
 						{
+        return new Symbol(TokenConstants.RPAREN);
 }
 					case -12:
 						break;
 					case 12:
 						{
-        return new Symbol(TokenConstants.RPAREN);
+        return new Symbol(TokenConstants.DOT);
 }
 					case -13:
 						break;
 					case 13:
 						{
-        return new Symbol(TokenConstants.DOT);
+        return new Symbol(TokenConstants.AT);
 }
 					case -14:
 						break;
 					case 14:
 						{
-        return new Symbol(TokenConstants.AT);
+        return new Symbol(TokenConstants.NEG);
 }
 					case -15:
 						break;
 					case 15:
 						{
-        return new Symbol(TokenConstants.NEG);
+        return new Symbol(TokenConstants.DIV);
 }
 					case -16:
 						break;
 					case 16:
 						{
-        return new Symbol(TokenConstants.DIV);
+        return new Symbol(TokenConstants.PLUS);
 }
 					case -17:
 						break;
 					case 17:
 						{
-        return new Symbol(TokenConstants.PLUS);
+        return new Symbol(TokenConstants.MINUS);
 }
 					case -18:
 						break;
@@ -502,59 +504,52 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 26:
 						{
-        yybegin(COMMENT);
+	return new Symbol(TokenConstants.ERROR, "Unmatched *)");
 }
 					case -27:
 						break;
 					case 27:
 						{
-	return new Symbol(TokenConstants.ERROR, "Unmatched *)");
+        return new Symbol(TokenConstants.ASSIGN);
 }
 					case -28:
 						break;
 					case 28:
 						{
-        return new Symbol(TokenConstants.ASSIGN);
+        return new Symbol(TokenConstants.LE);
 }
 					case -29:
 						break;
 					case 29:
 						{
-        return new Symbol(TokenConstants.LE);
+        return new Symbol(TokenConstants.DARROW);
 }
 					case -30:
 						break;
 					case 30:
 						{
-        return new Symbol(TokenConstants.DARROW);
 }
 					case -31:
 						break;
 					case 31:
 						{
-        yybegin(YYINITIAL);
+        curr_lineno++;
 }
 					case -32:
 						break;
 					case 32:
 						{
-        curr_lineno++;
+        yybegin(YYINITIAL);
 }
 					case -33:
 						break;
 					case 33:
 						{
-        yybegin(YYINITIAL);
+        string_buf.append(yytext());
 }
 					case -34:
 						break;
 					case 34:
-						{
-        string_buf.append(yytext());
-}
-					case -35:
-						break;
-					case 35:
 						{
         yybegin(YYINITIAL);
         String string = string_buf.toString();
@@ -564,69 +559,61 @@ class CoolLexer implements java_cup.runtime.Scanner {
             return new Symbol(TokenConstants.ERROR, "String constant too long");
         }
 }
+					case -35:
+						break;
+					case 35:
+						{
+        yybegin(STRING_ERROR);
+        return new Symbol(TokenConstants.ERROR, "String contains null character");
+}
 					case -36:
 						break;
 					case 36:
 						{
-        yybegin(STRING_ERROR);
-        return new Symbol(TokenConstants.ERROR, "String contains null character");
+        string_buf.append("\b");
 }
 					case -37:
 						break;
 					case 37:
 						{
-        yybegin(STRING_ERROR);
-        return new Symbol(TokenConstants.ERROR, "Unterminated string");
+        string_buf.append("\t");
 }
 					case -38:
 						break;
 					case 38:
 						{
-        string_buf.append("\b");
+        string_buf.append("\n");
 }
 					case -39:
 						break;
 					case 39:
 						{
-        string_buf.append("\t");
+        string_buf.append("\f");
 }
 					case -40:
 						break;
 					case 40:
 						{
-        string_buf.append("\n");
+        string_buf.append("\r");
 }
 					case -41:
 						break;
-					case 41:
+					case 42:
 						{
-        string_buf.append("\f");
+        return new Symbol(TokenConstants.ERROR, yytext());
 }
 					case -42:
 						break;
-					case 42:
+					case 43:
 						{
-        string_buf.append("\f");
+        return new Symbol(TokenConstants.OBJECTID, AbstractTable.idtable.addString(yytext()));
 }
 					case -43:
 						break;
 					case 44:
 						{
-        return new Symbol(TokenConstants.ERROR, yytext());
 }
 					case -44:
-						break;
-					case 45:
-						{
-        return new Symbol(TokenConstants.OBJECTID, AbstractTable.idtable.addString(yytext()));
-}
-					case -45:
-						break;
-					case 47:
-						{
-        return new Symbol(TokenConstants.ERROR, yytext());
-}
-					case -46:
 						break;
 					default:
 						yy_error(YY_E_INTERNAL,false);
