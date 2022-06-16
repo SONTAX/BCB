@@ -77,7 +77,7 @@ import java_cup.runtime.Symbol;
 INTEGERS = [0-9]+
 TYPE_IDENTIFIERS = [A-Z][A-Za-z0-9_]*
 OBJECT_IDENTIFIERS = [a-z][A-Za-z0-9_]*
-CHAR = [^\"\0\\]+
+CHAR = [^\"\0'\']+
 WHITESPACE = [ \f\r\t\v]+
 
 %state COMMENT
@@ -86,6 +86,66 @@ WHITESPACE = [ \f\r\t\v]+
 %state STRING_ERROR
 
 %%
+
+
+<YYINITIAL>"CLASS"|"class" {
+        return new Symbol(TokenConstants.CLASS);
+}
+<YYINITIAL>"ELSE"|"else" {
+        return new Symbol(TokenConstants.ELSE);
+}
+<YYINITIAL>"false" {
+        return new Symbol(TokenConstants.BOOL_CONST, false);
+}
+<YYINITIAL>"FI"|"fi" {
+        return new Symbol(TokenConstants.FI);
+}
+<YYINITIAL>"IF"|"if" {
+        return new Symbol(TokenConstants.IF);
+}
+<YYINITIAL>"IN"|"in" {
+        return new Symbol(TokenConstants.IN);
+}
+<YYINITIAL>"INHERITS"|"inherits" {
+        return new Symbol(TokenConstants.INHERITS);
+}
+<YYINITIAL>"ISVOID"|"isvoid" {
+        return new Symbol(TokenConstants.ISVOID);
+}
+<YYINITIAL>"LET"|"let" {
+        return new Symbol(TokenConstants.LET);
+}
+<YYINITIAL>"LOOP"|"loop" {
+        return new Symbol(TokenConstants.LOOP);
+}
+<YYINITIAL>"POOL"|"pool" {
+        return new Symbol(TokenConstants.POOL);
+}
+<YYINITIAL>"THEN"|"then" {
+        return new Symbol(TokenConstants.THEN);
+}
+<YYINITIAL>"WHILE"|"while" {
+        return new Symbol(TokenConstants.WHILE);
+}
+<YYINITIAL>"CASE"|"case" {
+        return new Symbol(TokenConstants.CASE);
+}
+<YYINITIAL>"ESAC"|"esac" {
+        return new Symbol(TokenConstants.ESAC);
+}
+<YYINITIAL>"NEW"|"new" {
+        return new Symbol(TokenConstants.NEW);
+}
+<YYINITIAL>"OF"|"of" {
+        return new Symbol(TokenConstants.OF);
+}
+<YYINITIAL>"NOT"|"not" {
+        return new Symbol(TokenConstants.NOT);
+}
+<YYINITIAL>"true" {
+        return new Symbol(TokenConstants.BOOL_CONST, true);
+}
+
 
 <YYINITIAL>{INTEGERS} {
         return new Symbol(TokenConstants.INT_CONST, AbstractTable.inttable.addString(yytext()));
@@ -152,65 +212,6 @@ WHITESPACE = [ \f\r\t\v]+
 }
 <YYINITIAL>"*)" {
 	return new Symbol(TokenConstants.ERROR, "Unmatched *)");
-}
-
-
-<YYINITIAL>"CLASS" {
-        return new Symbol(TokenConstants.CLASS);
-}
-<YYINITIAL>"ELSE" {
-        return new Symbol(TokenConstants.ELSE);
-}
-<YYINITIAL>"false" {
-        return new Symbol(TokenConstants.BOOL_CONST, false);
-}
-<YYINITIAL>"FI" {
-        return new Symbol(TokenConstants.FI);
-}
-<YYINITIAL>"IF" {
-        return new Symbol(TokenConstants.IF);
-}
-<YYINITIAL>"IN" {
-        return new Symbol(TokenConstants.IN);
-}
-<YYINITIAL>"INHERITS" {
-        return new Symbol(TokenConstants.INHERITS);
-}
-<YYINITIAL>"ISVOID" {
-        return new Symbol(TokenConstants.ISVOID);
-}
-<YYINITIAL>"LET" {
-        return new Symbol(TokenConstants.LET);
-}
-<YYINITIAL>"LOOP" {
-        return new Symbol(TokenConstants.LOOP);
-}
-<YYINITIAL>"POOL" {
-        return new Symbol(TokenConstants.POOL);
-}
-<YYINITIAL>"THEN" {
-        return new Symbol(TokenConstants.THEN);
-}
-<YYINITIAL>"WHILE" {
-        return new Symbol(TokenConstants.WHILE);
-}
-<YYINITIAL>"CASE" {
-        return new Symbol(TokenConstants.CASE);
-}
-<YYINITIAL>"ESAC" {
-        return new Symbol(TokenConstants.ESAC);
-}
-<YYINITIAL>"NEW" {
-        return new Symbol(TokenConstants.NEW);
-}
-<YYINITIAL>"OF" {
-        return new Symbol(TokenConstants.OF);
-}
-<YYINITIAL>"NOT" {
-        return new Symbol(TokenConstants.NOT);
-}
-<YYINITIAL>"true" {
-        return new Symbol(TokenConstants.BOOL_CONST, true);
 }
 
 
